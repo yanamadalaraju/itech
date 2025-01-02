@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - ITech Solutions{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero" style="background:linear-gradient(to right, #004080, #3366cc); color: white; padding: 70px 20px; text-align: center; margin: 0;width:100%;">
+    <div class="hero-content">
+        <h1 class="display-4" style="font-size: 3rem; font-weight: 700; margin-bottom: 10px; animation: fadeIn 1.5s;">Welcome to ITech Solutions</h1>
+        <p class="lead" style="font-size: 1.5rem; margin-top: 10px; animation: fadeIn 2s;">Your one-stop solution for all software needs</p>
+    </div>
+</div>
+
+<!-- Software Cards Section -->
+<div class="container my-5">
+    <h2 class="text-center mb-4" style="font-weight: 600;">Our Products</h2>
+    <div class="row">
+        {% for software in softwares %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm" style="border: none; transition: transform 0.3s, box-shadow 0.3s;background-color: #f8f9fa;padding:10px">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-weight: 600;text-align: center;">{{ software.name }}</h5>
+                    <p class="card-text" style="text-align: center;">{{ software.description }}</p>
+                </div>
+                <div class=" text-center" style="background-color: #f8f9fa;">
+                    <button class="btn btn-primary btn-sm openModal" data-bs-toggle="modal" data-bs-target="#downloadModal" 
+                            data-url="{{ software.file.url }}" data-name="{{ software.name }}">Download</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+<!-- Download Modal -->
+<div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="downloadModalLabel">Submit Your Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="downloadForm">
+                    <!-- Name Field -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold">Your Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-person-fill"></i></span>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required>
+                        </div>
+                    </div>
+                    <!-- Mobile Number Field -->
+                    <div class="mb-3">
+                        <label for="mobile" class="form-label fw-semibold">Mobile Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-phone-fill"></i></span>
+                            <input type="tel" id="mobile" name="mobile" class="form-control" placeholder="Enter your mobile number" required pattern="[0-9]{10}">
+                        </div>
+                    </div>
+                    <!-- Email Field -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-envelope-fill"></i></span>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    <!-- City Field -->
+                    <div class="mb-3">
+                        <label for="city" class="form-label fw-semibold">City</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-geo-alt-fill"></i></span>
+                            <input type="text" id="city" name="city" class="form-control" placeholder="Enter your city" required>
+                        </div>
+                    </div>
+                    <input type="hidden" id="downloadUrl">
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill" id="submitDownload">Submit & Download</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    let downloadUrl = "";
+    let softwareName = "";
+
+    // Open Modal and Capture Data
+    document.querySelectorAll('.openModal').forEach(button => {
+        button.addEventListener('click', function () {
+            downloadUrl = this.getAttribute('data-url');
+            softwareName = this.getAttribute('data-name'); // Get software name
+            document.getElementById('downloadUrl').value = downloadUrl;
+        });
+    });
+
+    // Handle Submit and AJAX Request
+    document.getElementById('submitDownload').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('mobile').value;
+        const city = document.getElementById('city').value;
+
+        if (name && email && phone && city) {
+            fetch('', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken'), // Fixed CSRF token retrieval
+                },
+                body: new URLSearchParams({
+                    name: name,
+                    email: email,
+                    mobile: phone,
+                    city: city,
+                    software_name: softwareName,
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Form submitted successfully!');
+
+                    // Trigger File Download
+                    const link = document.createElement('a');
+                    link.href = downloadUrl;
+                    link.download = "";
+                    link.click();
+
+                    // Close Modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('downloadModal'));
+                    modal.hide();
+                } else {
+                    alert('Failed to submit form. Please try again later!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
+        } else {
+            alert('Please fill in all fields!');
+        }
+    });
+
+    // Function to get CSRF Token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Check if cookie name matches the required token
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+
+
+</script>
+
+{% endblock %}
