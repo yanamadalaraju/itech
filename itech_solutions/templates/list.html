@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Software - ITech Solutions{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Uploaded Software</h2>
+    <div class="table-responsive">
+        <table class="table table-hover  table-bordered">
+            <thead class="custom-table-header table-dark text-center">
+                <tr>
+                    <th scope="col">S.No</th>
+                    <th scope="col">Software Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for software in softwares %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ software.name }}</td>
+                    <td>{{ software.description }}</td>
+                    <td class="d-flex gap-2 ">
+                        <a href="{% url 'update_software' software.id %}" class="btn btn-warning ">Edit</a>
+                        <a href="{% url 'delete_software' software.id %}" class="btn btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this software?');">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+<style>
+    .custom-table-header {
+        background-color: #007bff;  /* Change this to your desired color */
+        color: white;
+        font-weight: bold;
+    }
+</style>

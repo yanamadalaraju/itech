@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - ITech Solutions{% endblock %}
+
+{% block content %}
+
+
+
+<!-- Hero Section -->
+ <section class="hero"style="background:linear-gradient(to right, #004080, #3366cc); color: white; padding: 70px 20px; text-align: center; margin: 0;width:100%;">
+    <div class="hero-content">
+        <h1 class="display-4" style="font-size: 3rem; font-weight: 700; margin-bottom: 10px; animation: fadeIn 1.5s;">Contact Us</h1>
+        <p class="lead" style="font-size: 1.5rem; margin-top: 10px; animation: fadeIn 2s;">We'd love to hear from you! Get in touch with us today.</p>
+    </div>
+</section>
+
+{% if messages %}
+  <div class="alert alert-dismissible">
+      {% for message in messages %}
+          <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}">
+              {{ message }}
+          </div>
+      {% endfor %}
+  </div>
+{% endif %}
+
+<!-- Contact Form and Info Section -->
+<section class="container my-5">
+    <div class="row g-4">
+        <!-- Contact Form -->
+        <div class="col-md-6">
+            <div class="card contact-card p-4">
+                <h3 class="text-center mb-4">Send Us a Message</h3>
+                <form action="{% url 'contact' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold">Your Name</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Enter your name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mobile" class="form-label fw-semibold">Mobile Number</label>
+                        <input type="tel" id="mobile" name="mobile"  class="form-control" placeholder="Enter your mobile number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label fw-semibold">Message</label>
+                        <textarea id="message" name="message" rows="4" class="form-control" placeholder="Enter your message" required></textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+        <!-- Contact Information -->
+        <div class="col-md-6">
+            <div class="card contact-card p-4">
+                <h3 class="text-center mb-4">Contact Information</h3>
+                <ul class="list-unstyled">
+                    
+                    <li class="mb-3">
+                        <i class="bi bi-envelope-fill text-primary fs-5"></i>
+                        <span class="fw-semibold ms-2">Email:</span> <a href="mailto:itechsolutionsknr@gmail.com" class="text-decoration-none">itechsolutionsknr@gmail.com</a>
+                    </li>
+                    <li class="mb-3">
+                        <i class="bi bi-telephone-fill text-primary fs-5"></i>
+                        <span class="fw-semibold ms-2">Phone:</span> 7382307820
+                    </li>
+                    <li class="mb-3">
+                        <i class="bi bi-clock-fill text-primary fs-5"></i>
+                        <span class="fw-semibold ms-2">Hours:</span> Mon - Fri: 9:00 AM - 6:00 PM
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<style>
+    
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+{% endblock %}
